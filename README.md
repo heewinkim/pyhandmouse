@@ -8,8 +8,8 @@
 
 
 
-PyAutoGUI
-### 사용된 패키지
+
+### 사용된 패키지 ( from PYPI )
 
 ![](https://img.shields.io/badge/mediapipe-blue?style=for-the-badge&logo=appveyor)
 
