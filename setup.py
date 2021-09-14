@@ -13,7 +13,7 @@ require_packages=[
 packages = list(open('requirements.txt').readlines())
 setup(
     name='pyhandmouse',
-    version='1.0.0',
+    version='1.0.2',
     author='HEESEUNG KIM',
     author_email='heewin.kim@gmail.com',
     description='Hand Mouse using Python',
