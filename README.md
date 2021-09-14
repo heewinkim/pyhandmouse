@@ -22,8 +22,14 @@ PyAutoGUI
 pip3 install pyautomouse
 ````
 
-```` 사용법
-python 
+````python
+from pyhandmouse import PyHandMouse
+
+# 엄지 검지를 붙이면 클릭
+# 종료는 q
+PyHandMouse()
+
+
 ````
 
 
