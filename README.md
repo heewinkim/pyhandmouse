@@ -19,7 +19,7 @@ PyAutoGUI
 
 ### 설치
 ````shell
-pip3 install pyautomouse
+pip3 install pyhandmouse
 ````
 
 ````python
