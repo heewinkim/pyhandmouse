@@ -10,7 +10,6 @@ from utilpack.core import PyAlgorithm
 from mediapipe.framework.formats import landmark_pb2
 
 
-
 @dataclasses.dataclass
 class DrawingSpec:
     # Color for drawing the annotation. Default to the green color.
@@ -27,8 +26,7 @@ RED_COLOR = (0, 0, 255)
 VISIBILITY_THRESHOLD = 0.5
 
 
-def _normalized_to_pixel_coordinates(normalized_x: float, normalized_y: float, image_width: int, image_height: int) -> \
-Union[None, Tuple[int, int]]:
+def _normalized_to_pixel_coordinates(normalized_x: float, normalized_y: float, image_width: int, image_height: int) -> Union[None, Tuple[int, int]]:
     """Converts normalized value pair to pixel coordinates."""
 
     # Checks if the float value is between 0 and 1.
@@ -107,8 +105,9 @@ def video2screen(x,y):
 cap = cv2.VideoCapture(0)
 cap.set(3, 640)
 cap.set(4, 480)
-
-
+cv2.namedWindow('PyHandMouse',cv2.WINDOW_NORMAL)
+cv2.setWindowProperty('PyHandMouse',cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_FULLSCREEN)
+cv2.setWindowProperty('PyHandMouse',cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_NORMAL)
 with mp_hands.Hands(min_detection_confidence=0.75, min_tracking_confidence=0.75, max_num_hands=1) as hands:
     while cap.isOpened():
         success, image = cap.read()
@@ -135,28 +134,30 @@ with mp_hands.Hands(min_detection_confidence=0.75, min_tracking_confidence=0.75,
             hand_landmark = results.multi_hand_landmarks[0]
             landmarks = get_landmarks(image, hand_landmark, mp_hands.HAND_CONNECTIONS)
 
-            if not 8 in landmarks:
+            if not all([bool(v in landmarks) for v in [0, 8, 4]]):
                 continue
             # mp_drawing.draw_landmarks(image, hand_landmark, mp_hands.HAND_CONNECTIONS)
-            # image = cv2.circle(image,landmarks[4],5,(255,0,255),3)
-            # image = cv2.circle(image, landmarks[8], 5, (255, 255,0), 3)
+            image = cv2.circle(image,landmarks[4],5,(255,0,255),3)
+            image = cv2.circle(image, landmarks[0], 5, (255, 255,0), 3)
+            image = cv2.circle(image, landmarks[8], 5, (0, 255, 0), 3)
 
-            pyautogui.moveTo(video2screen(*landmarks[8]), _pause=False)
 
-            if prev_px:
-                distance = np.linalg.norm(np.subtract(landmarks[8], prev_px))
+            pyautogui.moveTo(video2screen(*landmarks[0]), _pause=False)
 
-                click_distance = np.linalg.norm(np.subtract(landmarks[8], landmarks[4]))
-                if click_toggle == False and click_distance < 20:
-                    pyautogui.click(landmarks[8])
-                    PyImageUtil.putTextCenter(image, 'Clicked!', (w // 2, h // 2),color = (255,255,255))
-                    click_toggle = not click_toggle
-                if click_toggle == True and click_distance > 30:
-                    click_toggle = not click_toggle
+            # if prev_px:
+            #     distance = np.linalg.norm(np.subtract(landmarks[4], prev_px))
 
-            prev_px = landmarks[8]
+            click_distance = np.linalg.norm(np.subtract(landmarks[4], landmarks[8]))
+            if click_toggle == False and click_distance < 20:
+                pyautogui.click(video2screen(*landmarks[0]))
+                PyImageUtil.putTextCenter(image, 'Clicked!', (w // 2, h // 2),color = (255,255,255))
+                click_toggle = not click_toggle
+            if click_toggle == True and click_distance > 30:
+                click_toggle = not click_toggle
 
-        cv2.imshow('MediaPipe Hands', image)
+            # prev_px = landmarks[8]
+
+        cv2.imshow('PyHandMouse', image)
         if cv2.waitKey(1) & 0xFF == 27:
             break
 
