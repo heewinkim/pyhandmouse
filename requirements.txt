@@ -1,4 +1,4 @@
 mediapipe==0.8.7.2
 PyAutoGUI==0.9.53
-opencv-python===4.5.2.54
+opencv-python==4.5.2.54
 utilpack
